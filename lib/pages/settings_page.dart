@@ -28,6 +28,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Paramètres')),
       body: Padding(
@@ -38,6 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 10),
             TextField(
               controller: _controller,
+              style: theme.textTheme.bodyMedium,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Base URL',
@@ -48,6 +52,12 @@ class _SettingsPageState extends State<SettingsPage> {
               onPressed: _saveUrl,
               icon: const Icon(Icons.save),
               label: const Text('Enregistrer'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    colorScheme.secondary, // button background color
+                foregroundColor:
+                    colorScheme.onSecondary, // text & icon color on button
+              ),
             ),
           ],
         ),

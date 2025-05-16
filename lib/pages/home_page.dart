@@ -33,12 +33,14 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       setState(() {
         _error = e.toString();
+        _salinity = null;
       });
     }
 
     setState(() {
       _isLoading = false;
     });
+
     _refreshController.refreshCompleted();
   }
 
@@ -48,8 +50,53 @@ class _HomePageState extends State<HomePage> {
     _fetchSalinity();
   }
 
+  Widget _buildErrorCard() {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: _fetchSalinity,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 5,
+        margin: const EdgeInsets.all(16),
+        color: theme.colorScheme.errorContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: theme.colorScheme.error,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                _error ?? "Erreur inconnue",
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Appuyez pour réessayer',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onErrorContainer.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // If you have CustomColors extension and want to access custom colors here:
+    // final customColors = theme.extension<CustomColors>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Salinité'),
@@ -57,6 +104,9 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => Navigator.pushNamed(context, '/settings'),
+            color: theme
+                .appBarTheme
+                .foregroundColor, // ensure icon color matches app bar text
           ),
         ],
       ),
@@ -66,12 +116,9 @@ class _HomePageState extends State<HomePage> {
         onRefresh: _fetchSalinity,
         child: Center(
           child: _isLoading
-              ? const SpinKitFadingCircle(color: Colors.teal, size: 50)
+              ? SpinKitFadingCircle(color: theme.colorScheme.primary, size: 50)
               : _error != null
-              ? Text(
-                  _error!,
-                  style: const TextStyle(color: Colors.red, fontSize: 18),
-                )
+              ? _buildErrorCard()
               : SalinityDisplay(value: _salinity!, onRefresh: _fetchSalinity),
         ),
       ),

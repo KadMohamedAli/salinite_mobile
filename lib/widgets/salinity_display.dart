@@ -12,6 +12,13 @@ class SalinityDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    // Use the custom colors from colorScheme
+    final textOnCardColor =
+        colorScheme.onPrimary; // for text on primary color background
+
     return GestureDetector(
       onTap: onRefresh,
       child: Card(
@@ -22,32 +29,31 @@ class SalinityDisplay extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              colors: [Colors.teal, Colors.tealAccent],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: colorScheme.primary,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Valeur de salinité est :',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+              Text(
+                'Valeur de salinité :',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: textOnCardColor,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
-                '$value',
-                style: const TextStyle(
-                  fontSize: 36,
+                '${value.toStringAsFixed(4)} g/L',
+                style: theme.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: textOnCardColor,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Appuyez pour rafraîchir',
-                style: TextStyle(fontSize: 14, color: Colors.white70),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: textOnCardColor.withOpacity(0.7),
+                ),
               ),
             ],
           ),
