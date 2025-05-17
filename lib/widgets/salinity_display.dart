@@ -14,10 +14,7 @@ class SalinityDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    // Use the custom colors from colorScheme
-    final textOnCardColor =
-        colorScheme.onPrimary; // for text on primary color background
+    final textColor = colorScheme.onPrimary;
 
     return GestureDetector(
       onTap: onRefresh,
@@ -31,31 +28,31 @@ class SalinityDisplay extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             color: colorScheme.primary,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Valeur de salinité :',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: textOnCardColor,
+          child: DefaultTextStyle(
+            style: TextStyle(color: textColor),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Valeur de salinité :',
+                  style: theme.textTheme.titleMedium,
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '${value.toStringAsFixed(4)} g/L',
-                style: theme.textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: textOnCardColor,
+                const SizedBox(height: 16),
+                Text(
+                  '${value.toStringAsFixed(4)} g/L',
+                  style: theme.textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Appuyez pour rafraîchir',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: textOnCardColor.withOpacity(0.7),
+                const SizedBox(height: 8),
+                Text(
+                  'Appuyez pour rafraîchir',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: textColor.withOpacity(0.7),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

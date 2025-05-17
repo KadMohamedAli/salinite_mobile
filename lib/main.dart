@@ -12,12 +12,22 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Define colors globally to reuse
+  // === Global reusable colors - All in one place for easy editing ===
   static const Color tealColor = Color(0xFF00796B);
-  static const Color goldColor = Color(0xFFFFB300);
 
-  static const Color lightBackground = Color(0xFFF5F5F5); // light grey
-  static const Color darkBackground = Color(0xFF212121); // dark grey
+  // Changed gold to coral for better contrast with teal
+  static const Color contrastColor = Color(0xFFFF6F61); // Coral
+
+  static const Color lightBackground = Color(0xFFF5F5F5);
+  static const Color darkBackground = Color(0xFF212121);
+
+  static const Color lightCardColor = Colors.white;
+  static const Color darkCardColor = Color(0xFF424242);
+
+  static const Color lightOnCardTextColor =
+      Colors.grey; // e.g. Color(0xFF616161)
+  static const Color darkOnCardTextColor =
+      Colors.grey; // e.g. Color(0xFFEEEEEE)
 
   @override
   Widget build(BuildContext context) {
@@ -28,39 +38,42 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme(
           brightness: Brightness.light,
           primary: tealColor,
-          onPrimary: Colors.white, // Text/icon on primary color (teal)
-          secondary: goldColor,
-          onSecondary: Colors.black87, // Text/icon on gold
+          onPrimary: lightOnCardTextColor,
+          secondary: contrastColor,
+          onSecondary: Colors.black87,
           background: lightBackground,
           onBackground: Colors.grey[900]!,
-          surface: Colors.white,
-          onSurface: Colors.grey[900]!,
+          surface: lightCardColor,
+          onSurface: lightOnCardTextColor,
           error: Colors.red.shade700,
-          onError: Colors.white,
+          onError: Colors.black,
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: lightBackground,
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: tealColor,
-          foregroundColor: Colors.white, // white text & icons on teal appbar
+          foregroundColor: Colors.grey[100],
           elevation: 4,
         ),
         cardTheme: CardThemeData(
-          color: Colors.white, // white cards on light mode
+          color: lightCardColor,
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           shadowColor: tealColor.withOpacity(0.25),
         ),
-        textTheme: Typography.blackMountainView.apply(
-          bodyColor: Colors.grey[900],
-          displayColor: Colors.grey[900],
-        ),
+        textTheme: Typography.blackMountainView
+            .apply(bodyColor: Colors.white, displayColor: Colors.white)
+            .copyWith(
+              labelLarge: const TextStyle(color: lightOnCardTextColor),
+              bodySmall: const TextStyle(color: Colors.black),
+              bodyMedium: const TextStyle(color: darkBackground),
+            ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: tealColor, // button background
-            foregroundColor: Colors.white, // button text color
+            backgroundColor: tealColor,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -71,39 +84,41 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme(
           brightness: Brightness.dark,
           primary: tealColor,
-          onPrimary: Colors.white,
-          secondary: goldColor,
+          onPrimary: lightOnCardTextColor,
+          secondary: contrastColor,
           onSecondary: Colors.black87,
           background: darkBackground,
           onBackground: Colors.grey[300]!,
-          surface: Color(0xFF424242), // dark card color
-          onSurface: Colors.grey[300]!,
+          surface: darkCardColor,
+          onSurface: darkOnCardTextColor,
           error: Colors.red.shade400,
-          onError: Colors.black,
+          onError: Colors.white,
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: darkBackground,
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: tealColor,
-          foregroundColor: Colors.white, // white text/icons on teal appbar
+          foregroundColor: Colors.grey[900],
           elevation: 4,
         ),
         cardTheme: CardThemeData(
-          color: Color(0xFF424242), // dark grey cards
+          color: darkCardColor,
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           shadowColor: Colors.black54,
         ),
-        textTheme: Typography.whiteMountainView.apply(
-          bodyColor: Colors.grey[300],
-          displayColor: Colors.grey[300],
-        ),
+        textTheme: Typography.whiteMountainView
+            .apply(bodyColor: Colors.grey[300], displayColor: Colors.grey[300])
+            .copyWith(
+              labelLarge: const TextStyle(color: darkOnCardTextColor),
+              bodySmall: const TextStyle(color: Colors.white),
+            ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: goldColor, // gold buttons in dark mode
-            foregroundColor: Colors.black87, // dark text on gold button
+            backgroundColor: contrastColor,
+            foregroundColor: Colors.black87,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),

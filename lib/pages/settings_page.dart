@@ -20,9 +20,13 @@ class _SettingsPageState extends State<SettingsPage> {
   void _saveUrl() async {
     await BaseUrlService.setBaseUrl(_controller.text.trim());
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Base URL mise à jour')));
+      final colorScheme = Theme.of(context).colorScheme;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Base URL mise à jour'),
+          backgroundColor: colorScheme.primary, // primary background color
+        ),
+      );
     }
   }
 
@@ -41,10 +45,22 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 10),
             TextField(
               controller: _controller,
-              style: theme.textTheme.bodyMedium,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.primary, // Text color uses primary color
+              ),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
                 labelText: 'Base URL',
+                labelStyle: TextStyle(
+                  color: colorScheme
+                      .primary, // Label text color uses primary color
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: colorScheme.primary, // Border color when focused
+                    width: 2,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
