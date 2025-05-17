@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: _checkWifiAndFetch,
       child: Card(
+        key: const ValueKey('error_card'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 5,
         margin: const EdgeInsets.all(16),
@@ -93,6 +94,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /// Loading animation widget
+  Widget _buildLoadingDots(Color color) {
+    return SpinKitThreeBounce(
+      key: const ValueKey('loading'),
+      color: color,
+      size: 30,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -113,15 +123,23 @@ class _HomePageState extends State<HomePage> {
         controller: _refreshController,
         enablePullDown: true,
         onRefresh: _checkWifiAndFetch,
+        header: MaterialClassicHeader(color: scheme.primary),
         child: Center(
-          child: _isLoading
-              ? SpinKitFadingCircle(color: scheme.primary, size: 50)
-              : _error != null
-              ? _buildErrorCard()
-              : SalinityDisplay(
-                  value: _salinity!,
-                  onRefresh: _checkWifiAndFetch,
-                ),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 100),
+            transitionBuilder: (child, animation) {
+              return ScaleTransition(scale: animation, child: child);
+            },
+            child: _isLoading
+                ? _buildLoadingDots(scheme.primary)
+                : (_error != null
+                      ? _buildErrorCard()
+                      : SalinityDisplay(
+                          key: const ValueKey('salinity_display'),
+                          value: _salinity!,
+                          onRefresh: _checkWifiAndFetch,
+                        )),
+          ),
         ),
       ),
     );
