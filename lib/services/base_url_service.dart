@@ -4,7 +4,7 @@ class BaseUrlService {
   static late SharedPreferences _prefs;
 
   static const String _key = 'base_url';
-  static String defaultUrl = 'http://192.168.0.1:6060/'; // Example ESP32 IP
+  static String defaultUrl = 'http://192.168.0.1:6060'; // Example ESP32 IP
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
