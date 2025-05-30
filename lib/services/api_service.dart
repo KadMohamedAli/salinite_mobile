@@ -1,10 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'base_url_service.dart';
 
 class ApiService {
+  /// Toggle for test mode: if true, return random values
+  static bool useFakeData = true;
+
   static Future<double> fetchSalinity() async {
+    if (useFakeData) {
+      return _generateFakeSalinity();
+    }
+
     final baseUrl = BaseUrlService.getBaseUrl();
     final uri = Uri.parse('$baseUrl/salinity'); // adapt if needed
 
@@ -13,22 +21,34 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+
         if (data.containsKey('value')) {
-          final valueString = data['value'].toString().replaceAll(
-            RegExp('[^0-9.]'),
-            '',
-          );
-          return double.parse(valueString);
+          final rawValue = data['value'].toString();
+
+          // Remove any non-numeric characters (except . for decimal)
+          final cleaned = rawValue.replaceAll(RegExp('[^0-9.]'), '');
+
+          if (cleaned.isEmpty || double.tryParse(cleaned) == null) {
+            throw Exception('Valeur invalide pour la salinité: "$rawValue"');
+          }
+
+          return double.parse(cleaned);
         } else {
           throw Exception('Clé "value" absente dans la réponse.');
         }
       } else {
         throw Exception('Erreur serveur: ${response.statusCode}');
       }
-    } on TimeoutException catch (_) {
+    } on TimeoutException {
       throw TimeoutException("La requête a expiré.");
     } catch (e) {
       throw Exception("Erreur lors de la récupération de la salinité: $e");
     }
+  }
+
+  static double _generateFakeSalinity() {
+    final random = Random();
+    // Simulate salinity between 20.0 and 40.0 (adjust as needed)
+    return 20 + random.nextDouble() * 20;
   }
 }

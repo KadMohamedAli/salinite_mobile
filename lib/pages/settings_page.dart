@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:salinite_mobile/widgets/salinity_history_widget.dart';
 import '../services/base_url_service.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Base URL mise à jour'),
-          backgroundColor: colorScheme.primary, // primary background color
+          backgroundColor: colorScheme.primary,
         ),
       );
     }
@@ -36,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Paramètres')),
+      appBar: AppBar(title: const Text("Paramètres")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -46,20 +47,14 @@ class _SettingsPageState extends State<SettingsPage> {
             TextField(
               controller: _controller,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.primary, // Text color uses primary color
+                color: colorScheme.primary,
               ),
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 labelText: 'Base URL',
-                labelStyle: TextStyle(
-                  color: colorScheme
-                      .primary, // Label text color uses primary color
-                ),
+                labelStyle: TextStyle(color: colorScheme.primary),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: colorScheme.primary, // Border color when focused
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
                 ),
               ),
             ),
@@ -69,10 +64,16 @@ class _SettingsPageState extends State<SettingsPage> {
               icon: const Icon(Icons.save),
               label: const Text('Enregistrer'),
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    colorScheme.secondary, // button background color
-                foregroundColor:
-                    colorScheme.onSecondary, // text & icon color on button
+                backgroundColor: colorScheme.secondary,
+                foregroundColor: colorScheme.onSecondary,
+              ),
+            ),
+            const SizedBox(height: 30),
+            // Make the widget take nearly all space but leave a bottom margin
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: SalinityHistoryWidget(),
               ),
             ),
           ],

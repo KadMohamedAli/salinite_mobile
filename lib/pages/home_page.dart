@@ -4,6 +4,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../services/api_service.dart';
 import '../widgets/salinity_display.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,6 +25,25 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _checkWifiAndFetch();
+  }
+
+  Future<void> _saveSalinityToLocalStorage() async {
+    if (_salinity == null) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now().toIso8601String();
+
+    final entry = jsonEncode({'value': _salinity, 'timestamp': now});
+
+    final history = prefs.getStringList('salinity_history') ?? [];
+    history.add(entry);
+
+    await prefs.setStringList('salinity_history', history);
+
+    // Optional: Snackbar confirmation
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Valeur enregistrée.')));
   }
 
   Future<void> _checkWifiAndFetch() async {
@@ -142,6 +163,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      floatingActionButton: (_salinity != null && !_isLoading && _error == null)
+          ? FloatingActionButton(
+              onPressed: _saveSalinityToLocalStorage,
+              tooltip: 'Enregistrer',
+              child: const Icon(Icons.save),
+            )
+          : null,
     );
   }
 }
