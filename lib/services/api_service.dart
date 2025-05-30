@@ -6,7 +6,7 @@ import 'base_url_service.dart';
 
 class ApiService {
   /// Toggle for test mode: if true, return random values
-  static bool useFakeData = true;
+  static bool useFakeData = false;
 
   static Future<double> fetchSalinity() async {
     if (useFakeData) {
