@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:salinite_mobile/widgets/salinity_graph_view.dart';
+import 'package:salinite_mobile/widgets/salinity_list_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SalinityHistoryWidget extends StatefulWidget {
@@ -12,6 +13,7 @@ class SalinityHistoryWidget extends StatefulWidget {
 
 class _SalinityHistoryWidgetState extends State<SalinityHistoryWidget> {
   List<Map<String, dynamic>> _history = [];
+  bool _showGraph = false;
 
   @override
   void initState() {
@@ -33,13 +35,14 @@ class _SalinityHistoryWidgetState extends State<SalinityHistoryWidget> {
       };
     }).toList();
 
-    // Fix: Force DateTime type before using compareTo
     parsed.sort(
       (a, b) =>
           (b['timestamp'] as DateTime).compareTo(a['timestamp'] as DateTime),
     );
 
-    setState(() => _history = parsed);
+    setState(
+      () => _history = parsed.reversed.toList(),
+    ); // Oldest to latest for graph
   }
 
   @override
@@ -59,11 +62,27 @@ class _SalinityHistoryWidgetState extends State<SalinityHistoryWidget> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text(
-              'Historique des salinités',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: colorScheme.onPrimaryContainer,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Historique des salinités',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    _showGraph ? Icons.list : Icons.show_chart,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                  tooltip: _showGraph
+                      ? 'Afficher la liste'
+                      : 'Afficher le graphique',
+                  onPressed: () => setState(() => _showGraph = !_showGraph),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             if (_history.isEmpty)
@@ -74,33 +93,10 @@ class _SalinityHistoryWidgetState extends State<SalinityHistoryWidget> {
                 ),
               )
             else
-              Flexible(
-                child: ListView.builder(
-                  itemCount: _history.length,
-                  itemBuilder: (context, index) {
-                    final item = _history[index];
-                    final value = item['value'] as double;
-                    final timestamp = item['timestamp'] as DateTime;
-
-                    return ListTile(
-                      title: Text(
-                        '${value.toStringAsFixed(4)} g/L',
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        DateFormat('yyyy-MM-dd HH:mm:ss').format(timestamp),
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer.withOpacity(
-                            0.85,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              Expanded(
+                child: _showGraph
+                    ? SalinityGraphView(history: _history)
+                    : SalinityListView(history: _history),
               ),
           ],
         ),
