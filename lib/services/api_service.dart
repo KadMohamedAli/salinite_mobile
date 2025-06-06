@@ -14,7 +14,7 @@ class ApiService {
     }
 
     final baseUrl = BaseUrlService.getBaseUrl();
-    final uri = Uri.parse('$baseUrl/salinity'); // adapt if needed
+    final uri = Uri.parse('$baseUrl/salinity');
 
     try {
       final response = await http.get(uri).timeout(const Duration(seconds: 30));
@@ -25,14 +25,23 @@ class ApiService {
         if (data.containsKey('value')) {
           final rawValue = data['value'].toString();
 
-          // Remove any non-numeric characters (except . for decimal)
-          final cleaned = rawValue.replaceAll(RegExp('[^0-9.]'), '');
+          // Remove any non-numeric characters (except . and - for decimal/negative)
+          final cleaned = rawValue.replaceAll(RegExp('[^0-9.-]'), '');
 
           if (cleaned.isEmpty || double.tryParse(cleaned) == null) {
             throw Exception('Valeur invalide pour la salinité: "$rawValue"');
           }
 
-          return double.parse(cleaned);
+          final salinity = double.parse(cleaned);
+
+          // Check for special value indicating a connection without data
+          if (salinity == -1) {
+            throw Exception(
+              'Capteur connecté, mais aucune donnée reçue (vérifiez la connexion LoRa).',
+            );
+          }
+
+          return salinity;
         } else {
           throw Exception('Clé "value" absente dans la réponse.');
         }
