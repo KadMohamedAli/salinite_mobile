@@ -69,6 +69,9 @@ class MyApp extends StatelessWidget {
               labelLarge: const TextStyle(color: lightOnCardTextColor),
               bodySmall: const TextStyle(color: Colors.black),
               bodyMedium: const TextStyle(color: darkBackground),
+              titleLarge: const TextStyle(
+                color: Colors.black,
+              ), // << Add this line
             ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -114,6 +117,9 @@ class MyApp extends StatelessWidget {
             .copyWith(
               labelLarge: const TextStyle(color: darkOnCardTextColor),
               bodySmall: const TextStyle(color: Colors.white),
+              titleLarge: const TextStyle(
+                color: Colors.white,
+              ), // << Add this line
             ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
